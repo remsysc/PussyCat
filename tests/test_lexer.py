@@ -352,16 +352,16 @@ class TestIntegration(unittest.TestCase):
 
     def test_full_pussycat_snippet(self):
         source = (
-            "gawain halaga(x):\n"
-            "    kung x > 0:\n"
-            "        ibalik totoo\n"
-            "    kundi:\n"
-            "        ibalik mali\n"
+            "trick halaga(x):\n"
+            "    meow x > 0:\n"
+            "        furball purr\n"
+            "    mew:\n"
+            "        furball hiss\n"
         )
         result = tokenize(source)
         self.assertIsNone(result.error)
         kws = [t.value for t in result.tokens if t.type == "KEYWORD"]
-        for kw in ["gawain", "kung", "ibalik", "totoo", "kundi", "mali"]:
+        for kw in ["trick", "meow", "furball", "purr", "mew", "hiss"]:
             self.assertIn(kw, kws)
 
     def test_never_raises(self):

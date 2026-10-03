@@ -63,7 +63,7 @@ class TestCodeBuilding(unittest.TestCase):
         self.assertEqual(lex_and_transpile("x = 1\ny = 2").python, "x = 1\ny = 2")
 
     def test_indentation_preserved(self):
-        r = lex_and_transpile("kung x > 0:\n    ipakita(x)")
+        r = lex_and_transpile("meow x > 0:\n    nyan(x)")
         self.assertIn("    ", r.python)
 
     def test_result_is_transpile_result(self):
@@ -84,32 +84,32 @@ class TestKeywordSubstitution(unittest.TestCase):
             r = lex_and_transpile(kw)
             self.assertEqual(r.python, py, f"'{kw}' → expected '{py}', got '{r.python}'")
 
-    def test_kung_becomes_if(self):
-        self.assertTrue(lex_and_transpile("kung x > 0:").python.startswith("if"))
+    def test_meow_becomes_if(self):
+        self.assertTrue(lex_and_transpile("meow x > 0:").python.startswith("if"))
 
-    def test_kundi_becomes_else(self):
-        self.assertIn("else", lex_and_transpile("kundi:").python)
+    def test_mew_becomes_else(self):
+        self.assertIn("else", lex_and_transpile("mew:").python)
 
-    def test_habang_becomes_while(self):
-        self.assertIn("while", lex_and_transpile("habang totoo:").python)
+    def test_chase_becomes_while(self):
+        self.assertIn("while", lex_and_transpile("chase purr:").python)
 
-    def test_para_becomes_for(self):
-        self.assertIn("for", lex_and_transpile("para i sa range(5):").python)
+    def test_paws_becomes_for(self):
+        self.assertIn("for", lex_and_transpile("paws i in range(5):").python)
 
-    def test_ibalik_becomes_return(self):
-        self.assertIn("return", lex_and_transpile("ibalik x").python)
+    def test_furball_becomes_return(self):
+        self.assertIn("return", lex_and_transpile("furball x").python)
 
-    def test_totoo_becomes_True(self):
-        self.assertEqual(lex_and_transpile("totoo").python, "True")
+    def test_purr_becomes_True(self):
+        self.assertEqual(lex_and_transpile("purr").python, "True")
 
-    def test_mali_becomes_False(self):
-        self.assertEqual(lex_and_transpile("mali").python, "False")
+    def test_hiss_becomes_False(self):
+        self.assertEqual(lex_and_transpile("hiss").python, "False")
 
-    def test_wala_becomes_None(self):
-        self.assertEqual(lex_and_transpile("wala").python, "None")
+    def test_box_becomes_None(self):
+        self.assertEqual(lex_and_transpile("box").python, "None")
 
-    def test_ipakita_becomes_print(self):
-        self.assertTrue(lex_and_transpile('ipakita("hi")').python.startswith("print"))
+    def test_nyan_becomes_print(self):
+        self.assertTrue(lex_and_transpile('nyan("hi")').python.startswith("print"))
 
     def test_non_keyword_not_substituted(self):
         self.assertEqual(lex_and_transpile("myVar").python, "myVar")
@@ -195,38 +195,38 @@ class TestLineMapGeneration(unittest.TestCase):
 class TestIntegration(unittest.TestCase):
 
     def test_print_hello(self):
-        self.assertEqual(lex_and_transpile('ipakita("hello")').python, 'print("hello")')
+        self.assertEqual(lex_and_transpile('nyan("hello")').python, 'print("hello")')
 
     def test_if_else_block(self):
-        source = "kung x > 0:\n    ipakita(x)\nkundi:\n    ipakita(0)\n"
+        source = "meow x > 0:\n    nyan(x)\nmew:\n    nyan(0)\n"
         r = lex_and_transpile(source)
         self.assertIn("if x > 0:", r.python)
         self.assertIn("else:", r.python)
 
     def test_while_loop(self):
-        r = lex_and_transpile("habang x > 0:\n    x = x - 1\n")
+        r = lex_and_transpile("chase x > 0:\n    x = x - 1\n")
         self.assertIn("while x > 0:", r.python)
 
     def test_function_definition(self):
-        r = lex_and_transpile("gawain add(a, b):\n    ibalik a + b\n")
+        r = lex_and_transpile("trick add(a, b):\n    furball a + b\n")
         self.assertIn("def add(a, b):", r.python)
         self.assertIn("return a + b", r.python)
 
     def test_try_except_finally(self):
-        source = "subukan:\n    ipakita(x)\nmaliban:\n    ipakita(0)\nwakas:\n    ipakita(1)\n"
+        source = "pounce:\n    nyan(x)\nmiss:\n    nyan(0)\nnap:\n    nyan(1)\n"
         r = lex_and_transpile(source)
         self.assertIn("try:", r.python)
         self.assertIn("except:", r.python)
         self.assertIn("finally:", r.python)
 
     def test_boolean_literals(self):
-        r = lex_and_transpile("x = totoo\ny = mali\nz = wala")
+        r = lex_and_transpile("x = purr\ny = hiss\nz = box")
         self.assertIn("True",  r.python)
         self.assertIn("False", r.python)
         self.assertIn("None",  r.python)
 
     def test_logical_operators(self):
-        r = lex_and_transpile("kung x > 0 at y > 0:")
+        r = lex_and_transpile("meow x > 0 whiskers y > 0:")
         self.assertIn("and", r.python)
 
     def test_modulo_expression(self):
@@ -239,12 +239,12 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("|", r.python)
 
     def test_escaped_string_passthrough(self):
-        r = lex_and_transpile(r'ipakita("hello \"world\"")')
+        r = lex_and_transpile(r'nyan("hello \"world\"")')
         self.assertIn('print', r.python)
         self.assertIn('\\"', r.python)
 
     def test_import_from(self):
-        r = lex_and_transpile("mula os itaas path")
+        r = lex_and_transpile("shelter os adopt path")
         self.assertIn("from", r.python)
         self.assertIn("import", r.python)
 
