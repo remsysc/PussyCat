@@ -280,25 +280,32 @@ class PussyCatIDE:
 
     # ── Keyword bar ───────────────────────────────────────────────────────────
     def _fill_keyword_bar(self):
-        """Fill keyword reference bar with all KEYWORD_MAP entries as buttons."""
-        for cat_kw, py_kw in KEYWORD_MAP.items():
-            btn = tk.Label(
+        """Fill keyword bar with one button per KEYWORD_MAP entry ("meow → if").
+
+        Clicking a button inserts the PussyCat keyword at the editor cursor.
+        """
+        self.keyword_buttons: dict[str, tk.Button] = {}
+        columns = 10
+        for i, (cat_kw, py_kw) in enumerate(KEYWORD_MAP.items()):
+            btn = tk.Button(
                 self.keyword_bar,
-                text=f"{cat_kw}",
-                bg=CAT["bg_bar"],
+                text=f"{cat_kw} → {py_kw}",
+                command=lambda k=cat_kw: self._insert_keyword(k),
+                bg=CAT["bg_panel"],
                 fg=CAT["fg_keyword"],
+                activebackground=CAT["select_bg"],
+                activeforeground=CAT["accent"],
                 font=FONT_SMALL,
+                relief=tk.FLAT,
                 cursor="hand2",
                 padx=6,
-                pady=4,
+                pady=2,
+                bd=0,
             )
-            btn.pack(side=tk.LEFT)
-            # Tooltip-style hover
-            tip_text = f"{cat_kw} → {py_kw}"
-            btn.bind("<Enter>",  lambda e, b=btn, t=tip_text: b.config(fg=CAT["accent"], text=t))
-            btn.bind("<Leave>",  lambda e, b=btn, k=cat_kw:   b.config(fg=CAT["fg_keyword"], text=k))
-            # Click inserts keyword into editor
-            btn.bind("<Button-1>", lambda e, k=cat_kw: self._insert_keyword(k))
+            btn.grid(row=i // columns, column=i % columns, padx=2, pady=2, sticky="ew")
+            self.keyword_buttons[cat_kw] = btn
+        for c in range(columns):
+            self.keyword_bar.grid_columnconfigure(c, weight=1, uniform="kw")
 
     def _insert_keyword(self, keyword: str):
         """Insert a keyword from the bar into the editor at cursor."""
